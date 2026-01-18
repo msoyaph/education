@@ -42,9 +42,14 @@ export function LandingNav() {
             >
               Sign In
             </Link>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm">
+            <a
+              href="https://nexscout.io/book/0sb12js"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+            >
               Request Demo
-            </button>
+            </a>
           </div>
 
           <button
@@ -77,9 +82,15 @@ export function LandingNav() {
               >
                 Sign In
               </Link>
-              <button className="w-full bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+              <a
+                href="https://nexscout.io/book/0sb12js"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Request Demo
-              </button>
+              </a>
             </div>
           </div>
         </div>

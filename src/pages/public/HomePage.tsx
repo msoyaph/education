@@ -160,10 +160,15 @@ export function HomePage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button className="group bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105">
+              <a
+                href="https://nexscout.io/book/0sb12js"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105 inline-flex items-center justify-center"
+              >
                 Request a Demo
                 <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </a>
               <Link
                 to="/login"
                 className="bg-blue-500/20 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-500/30 transition-all"
@@ -353,12 +358,22 @@ export function HomePage() {
             Start your free 14-day trial today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-all shadow-xl hover:scale-105">
+            <a
+              href="https://nexscout.io/chat/0sb12js"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-50 transition-all shadow-xl hover:scale-105 inline-block text-center"
+            >
               Get Started Free
-            </button>
-            <button className="bg-blue-500/30 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-500/40 transition-all">
+            </a>
+            <a
+              href="https://nexscout.io/book/0sb12js"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-blue-500/30 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-500/40 transition-all inline-block text-center"
+            >
               Schedule a Demo
-            </button>
+            </a>
           </div>
           <p className="mt-6 text-sm text-blue-200">
             No credit card required • Setup in minutes • Cancel anytime
