@@ -9,7 +9,7 @@
  * - Grades visible only if published
  */
 
-import { Users, CheckSquare, Award, TrendingUp, Calendar, FileText } from 'lucide-react';
+import { Users, CheckSquare, Award, TrendingUp, Calendar, FileText, MessageSquare } from 'lucide-react';
 import { useUser } from '../../domains/auth/contexts/UserContext';
 import { RoleGuard } from '../../shared/components/guards/RoleGuard';
 import { PermissionGuard } from '../../shared/components/guards/PermissionGuard';
@@ -224,11 +224,11 @@ function ParentDashboardContent() {
             <p className="text-sm font-medium text-gray-900">Notifications</p>
           </Link>
           <Link
-            to="/parent/chat"
+            to="/parent/messages"
             className="p-4 bg-orange-50 hover:bg-orange-100 rounded-lg border border-orange-200 transition-colors text-center"
           >
-            <Calendar className="w-6 h-6 text-orange-600 mx-auto mb-2" />
-            <p className="text-sm font-medium text-gray-900">Chat</p>
+            <MessageSquare className="w-6 h-6 text-orange-600 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-900">Messages</p>
           </Link>
         </div>
       </div>

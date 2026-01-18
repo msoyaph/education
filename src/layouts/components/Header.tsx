@@ -15,13 +15,24 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { profile } = useUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const handleSignOut = async () => {
+  const handleSignOut = async (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    
+    setShowUserMenu(false); // Close menu immediately
+    
+    // Try to sign out from Supabase, but don't block on errors
     try {
       await signOut();
-      navigate('/login');
     } catch (error) {
-      console.error('Error signing out:', error);
+      // Supabase signOut might fail if session is already invalid/expired
+      // That's okay - we'll still clear everything with hard redirect
+      console.warn('Supabase signOut failed (session may already be invalid):', error);
     }
+    
+    // Use hard redirect to ensure everything is cleared
+    // This forces a full page reload, clearing all React state
+    window.location.href = '/login';
   };
 
   return (
@@ -70,7 +81,10 @@ export function Header({ onMenuClick }: HeaderProps) {
               <>
                 <div
                   className="fixed inset-0 z-10"
-                  onClick={() => setShowUserMenu(false)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowUserMenu(false);
+                  }}
                 />
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
                   <div className="px-4 py-3 border-b border-gray-200">
@@ -93,7 +107,15 @@ export function Header({ onMenuClick }: HeaderProps) {
 
                   <button
                     onClick={() => {
-                      navigate('/settings');
+                      // Navigate to role-specific settings
+                      const role = profile?.user_type;
+                      if (role === 'teacher') {
+                        navigate('/teacher/settings');
+                      } else if (role === 'admin' || role === 'staff') {
+                        navigate('/admin/settings');
+                      } else {
+                        navigate('/settings');
+                      }
                       setShowUserMenu(false);
                     }}
                     className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -105,7 +127,8 @@ export function Header({ onMenuClick }: HeaderProps) {
                   <hr className="my-2 border-gray-200" />
 
                   <button
-                    onClick={handleSignOut}
+                    onClick={(e) => handleSignOut(e)}
+                    type="button"
                     className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >
                     <LogOut className="w-4 h-4" />

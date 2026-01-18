@@ -17,7 +17,9 @@ export type Resource =
   | 'notifications'
   | 'reports'
   | 'settings'
-  | 'users';
+  | 'users'
+  | 'grading'
+  | 'messaging';
 
 export type Action = 
   | 'create'
@@ -108,15 +110,25 @@ const ROLE_CAPABILITIES: Record<UserRole, Capability[]> = {
     'notifications:create',
     'reports:read',
     'reports:view',
+    'grading:read',
+    'grading:create',
+    'grading:update',
+    'messaging:read',
+    'messaging:create',
   ],
   parent: [
     'attendance:view',
     'students:view', // Only their children
     'notifications:read',
     'notifications:view',
+    'messaging:read',
+    'messaging:create',
   ],
   student: [
     'attendance:view', // Only their own
+    'grading:read', // Only their own grades
+    'classes:read', // Only enrolled classes
+    'students:view', // Only their own profile
     'notifications:read',
     'notifications:view',
   ],

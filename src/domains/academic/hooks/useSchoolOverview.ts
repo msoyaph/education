@@ -1,19 +1,18 @@
 /**
  * Hook for fetching school overview data
- * 
- * TODO: Backend must implement GET /schools/{id}/overview
  */
 
 import { useState, useEffect } from 'react';
 import { useTenant } from '../../../shared/contexts/TenantContext';
-import { useApiRequest } from '../../../shared/hooks/useApiRequest';
-import { ApiClientError } from '../../../shared/services/apiClient';
+import { getSchoolStats } from '../../admin/services/schoolStatsService';
+import { getRecentActivity } from '../../admin/services/activityService';
 
 export interface SchoolOverview {
   attendance_today: number;
   attendance_week: number;
   student_count: number;
   teacher_count: number;
+  class_count: number;
   recent_activity: Array<{
     id: string;
     type: string;
@@ -28,7 +27,6 @@ export interface SchoolOverview {
 
 export function useSchoolOverview() {
   const { school } = useTenant();
-  const { get } = useApiRequest();
   const [data, setData] = useState<SchoolOverview | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,24 +42,26 @@ export function useSchoolOverview() {
         setLoading(true);
         setError(null);
         
-        // TODO: Replace with actual API endpoint
-        // const result = await get<SchoolOverview>(`/schools/${school.id}/overview`);
-        // setData(result);
+        // Fetch stats and activity in parallel
+        const [stats, activity] = await Promise.all([
+          getSchoolStats(school.id),
+          getRecentActivity(school.id, 10),
+        ]);
         
-        // Temporary mock data - REMOVE when backend is ready
         setData({
-          attendance_today: 0,
+          attendance_today: 0, // Will be calculated from attendance data
           attendance_week: 0,
-          student_count: 0,
-          teacher_count: 0,
-          recent_activity: [],
+          student_count: stats.student_count,
+          teacher_count: stats.teacher_count,
+          class_count: stats.class_count,
+          recent_activity: activity,
           system_status: {
             status: 'operational',
             message: 'All systems operational',
           },
         });
       } catch (err) {
-        const message = err instanceof ApiClientError 
+        const message = err instanceof Error 
           ? err.message 
           : 'Failed to load school overview';
         setError(message);
@@ -72,7 +72,7 @@ export function useSchoolOverview() {
     }
 
     fetchOverview();
-  }, [school?.id, get]);
+  }, [school?.id]);
 
   return { data, loading, error };
 }

@@ -65,45 +65,61 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         .eq('id', user.id)
         .maybeSingle();
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Database error loading user profile:', profileError);
+        throw new Error(`Failed to load user profile: ${profileError.message}`);
+      }
 
       if (!profileData) {
-        throw new Error('User profile not found');
+        console.warn('User profile not found for user:', user.id);
+        // Don't throw - allow user to continue (they might need to complete profile setup)
+        setProfile(null);
+        setLoading(false);
+        return;
       }
 
       setProfile(profileData);
 
-      const { data: rolesData } = await supabase
-        .from('user_roles')
-        .select(`
-          role_id,
-          roles (
-            id,
-            name,
-            role_capabilities (
-              capabilities (
-                id,
-                name,
-                resource,
-                action
+      // Load user roles and permissions (optional - user might not have roles assigned)
+      try {
+        const { data: rolesData, error: rolesError } = await supabase
+          .from('user_roles')
+          .select(`
+            role_id,
+            roles (
+              id,
+              name,
+              role_capabilities (
+                capabilities (
+                  id,
+                  name,
+                  resource,
+                  action
+                )
               )
             )
-          )
-        `)
-        .eq('user_id', user.id);
+          `)
+          .eq('user_id', user.id);
 
-      if (rolesData && rolesData.length > 0) {
-        const allPermissions: Permission[] = [];
-        rolesData.forEach((userRole: any) => {
-          if (userRole.roles?.role_capabilities) {
-            userRole.roles.role_capabilities.forEach((rc: any) => {
-              if (rc.capabilities) {
-                allPermissions.push(rc.capabilities);
-              }
-            });
-          }
-        });
-        setPermissions(allPermissions);
+        if (rolesError) {
+          console.warn('Error loading user roles (non-critical):', rolesError);
+          // Continue without roles - user might not have roles assigned yet
+        } else if (rolesData && rolesData.length > 0) {
+          const allPermissions: Permission[] = [];
+          rolesData.forEach((userRole: any) => {
+            if (userRole.roles?.role_capabilities) {
+              userRole.roles.role_capabilities.forEach((rc: any) => {
+                if (rc.capabilities) {
+                  allPermissions.push(rc.capabilities);
+                }
+              });
+            }
+          });
+          setPermissions(allPermissions);
+        }
+      } catch (rolesErr) {
+        // Non-critical error - user can still function without roles
+        console.warn('Error loading user roles (non-critical):', rolesErr);
       }
     } catch (err) {
       console.error('Error loading user profile:', err);

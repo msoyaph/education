@@ -18,7 +18,12 @@ export function NotificationBell() {
       const count = await getUnreadCount();
       setUnreadCount(count);
     } catch (err) {
-      console.error('Failed to load unread count:', err);
+      // Silently handle errors - getUnreadCount already returns 0 on failure
+      // Only log for debugging
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Failed to load unread count:', err);
+      }
+      setUnreadCount(0);
     }
   }
 

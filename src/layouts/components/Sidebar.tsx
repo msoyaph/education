@@ -105,10 +105,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         />
       )}
 
-      <div
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static ${
+      <aside
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        } lg:translate-x-0 lg:static lg:transform-none lg:h-screen`}
       >
         <div className="h-full flex flex-col">
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
@@ -164,7 +164,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
           </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 }

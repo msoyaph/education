@@ -54,12 +54,12 @@ export function StudentAttendanceView({ studentId, studentName, viewMode }: Stud
 
   function formatDate(dateString: string) {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   function formatTime(timeString?: string) {
     if (!timeString) return '-';
-    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
+    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-PH', {
       hour: 'numeric',
       minute: '2-digit',
     });

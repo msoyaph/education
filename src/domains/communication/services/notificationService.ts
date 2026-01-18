@@ -35,7 +35,7 @@ export async function getNotifications(
   if (status) params.append('status', status);
   if (eventType) params.append('event_type', eventType);
 
-  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/notifications?${params.toString()}`, {
+  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}?${params.toString()}`, {
     headers,
   });
 
@@ -48,25 +48,40 @@ export async function getNotifications(
 }
 
 export async function getUnreadCount(): Promise<number> {
-  const headers = await getAuthHeaders();
+  try {
+    const headers = await getAuthHeaders();
 
-  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/notifications/unread-count`, {
-    headers,
-  });
+    const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/unread-count`, {
+      headers,
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to fetch unread count');
+    if (!response.ok) {
+      // If unauthorized, return 0 instead of throwing
+      if (response.status === 401) {
+        console.warn('Not authenticated for notifications');
+        return 0;
+      }
+      const error = await response.json().catch(() => ({ error: 'Failed to fetch unread count' }));
+      throw new Error(error.error || 'Failed to fetch unread count');
+    }
+
+    const result = await response.json();
+    return result.count || 0;
+  } catch (error) {
+    // If not authenticated, silently return 0 instead of throwing
+    if (error instanceof Error && error.message.includes('Not authenticated')) {
+      return 0;
+    }
+    // Log other errors but don't throw - allow UI to continue
+    console.warn('Failed to load unread notification count:', error);
+    return 0;
   }
-
-  const result = await response.json();
-  return result.count;
 }
 
 export async function markNotificationAsRead(notificationId: string): Promise<void> {
   const headers = await getAuthHeaders();
 
-  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/notifications/${notificationId}/read`, {
+  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/${notificationId}/read`, {
     method: 'PUT',
     headers,
   });
@@ -80,7 +95,7 @@ export async function markNotificationAsRead(notificationId: string): Promise<vo
 export async function markAllNotificationsAsRead(): Promise<void> {
   const headers = await getAuthHeaders();
 
-  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/notifications/mark-all-read`, {
+  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/mark-all-read`, {
     method: 'PUT',
     headers,
   });
@@ -94,7 +109,7 @@ export async function markAllNotificationsAsRead(): Promise<void> {
 export async function createNotification(payload: CreateNotificationPayload): Promise<void> {
   const headers = await getAuthHeaders();
 
-  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/notifications/create`, {
+  const response = await fetch(`${NOTIFICATION_FUNCTION_URL}/create`, {
     method: 'POST',
     headers,
     body: JSON.stringify(payload),

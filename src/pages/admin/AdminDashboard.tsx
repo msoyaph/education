@@ -47,7 +47,7 @@ function AdminDashboardContent() {
     {
       icon: BookOpen,
       label: 'Classes',
-      value: '0', // TODO: Get from API
+      value: overview?.class_count?.toString() || '0',
       change: '+0',
       color: 'bg-purple-100 text-purple-600',
       link: '/admin/classes',
@@ -56,9 +56,9 @@ function AdminDashboardContent() {
       icon: TrendingUp,
       label: 'Attendance Rate',
       value: attendance?.week.rate ? `${attendance.week.rate}%` : '0%',
-      change: '+0%',
+      change: attendance?.week.rate ? `+${attendance.week.rate}%` : '+0%',
       color: 'bg-orange-100 text-orange-600',
-      link: '/admin/attendance',
+      link: '/admin/reports',
     },
   ];
 
@@ -147,12 +147,6 @@ function AdminDashboardContent() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
-            <Link
-              to="/admin/activity"
-              className="text-sm text-blue-600 hover:text-blue-700"
-            >
-              View All
-            </Link>
           </div>
           <div className="space-y-4">
             {overview?.recent_activity && overview.recent_activity.length > 0 ? (
@@ -162,7 +156,7 @@ function AdminDashboardContent() {
                   <div className="flex-1">
                     <p className="text-sm text-gray-900">{activity.message}</p>
                     <p className="text-xs text-gray-500">
-                      {new Date(activity.timestamp).toLocaleString()}
+                      {new Date(activity.timestamp).toLocaleString('en-PH')}
                     </p>
                   </div>
                 </div>
@@ -202,7 +196,7 @@ function AdminDashboardContent() {
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Last Backup</span>
                 <span className="text-gray-900">
-                  {new Date().toLocaleDateString()}
+                  {new Date().toLocaleDateString('en-PH')}
                 </span>
               </div>
             </div>

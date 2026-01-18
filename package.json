@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
-    "create-users": "tsx scripts/create-test-users.ts"
+    "create-users": "tsx scripts/create-test-users.ts",
+    "test-connection": "tsx scripts/test-connection.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",

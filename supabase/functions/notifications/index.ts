@@ -45,9 +45,14 @@ Deno.serve(async (req: Request) => {
 
     const url = new URL(req.url);
     const path = url.pathname;
+    
+    // Extract route after /functions/v1/notifications
+    // e.g., /functions/v1/notifications/unread-count -> unread-count
+    const routeMatch = path.match(/\/functions\/v1\/notifications\/(.*)$/);
+    const route = routeMatch ? routeMatch[1] : path.replace(/^\//, '');
 
-    // GET /notifications - Get user's notifications
-    if (req.method === 'GET' && path.endsWith('/notifications')) {
+    // GET / or empty route - Get user's notifications
+    if (req.method === 'GET' && (route === '' || route === 'notifications')) {
       const limit = parseInt(url.searchParams.get('limit') || '50');
       const offset = parseInt(url.searchParams.get('offset') || '0');
       const status = url.searchParams.get('status');
@@ -99,8 +104,8 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // GET /notifications/unread-count
-    if (req.method === 'GET' && path.includes('/unread-count')) {
+    // GET /unread-count
+    if (req.method === 'GET' && route === 'unread-count') {
       const { count } = await supabase
         .from('notif_queue')
         .select('*', { count: 'exact', head: true })
@@ -116,9 +121,10 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // PUT /notifications/:id/read - Mark as read
-    if (req.method === 'PUT' && path.includes('/read')) {
-      const notificationId = path.split('/')[path.split('/').length - 2];
+    // PUT /:id/read - Mark as read
+    if (req.method === 'PUT' && route.endsWith('/read')) {
+      const pathSegments = route.split('/').filter(p => p);
+      const notificationId = pathSegments[pathSegments.length - 2];
 
       const { error } = await supabase
         .from('notif_queue')
@@ -149,8 +155,8 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // PUT /notifications/mark-all-read
-    if (req.method === 'PUT' && path.includes('/mark-all-read')) {
+    // PUT /mark-all-read
+    if (req.method === 'PUT' && route === 'mark-all-read') {
       const { error } = await supabase
         .from('notif_queue')
         .update({
@@ -180,8 +186,8 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // POST /notifications/create - Create notifications (system/admin only)
-    if (req.method === 'POST' && path.includes('/create')) {
+    // POST /create - Create notifications (system/admin only)
+    if (req.method === 'POST' && route === 'create') {
       const body: CreateNotificationPayload = await req.json();
 
       if (!body.event_type || !body.recipient_ids || !Array.isArray(body.recipient_ids)) {
@@ -312,7 +318,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // GET /subscriptions - Get user's subscription preferences
-    if (req.method === 'GET' && path.includes('/subscriptions')) {
+    if (req.method === 'GET' && route === 'subscriptions') {
       const { data: subscriptions } = await supabase
         .from('notif_subscriptions')
         .select('*, notif_events(*)')
@@ -354,7 +360,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // POST /subscriptions - Update user's subscription preferences
-    if (req.method === 'POST' && path.includes('/subscriptions')) {
+    if (req.method === 'POST' && route === 'subscriptions') {
       const body = await req.json();
 
       if (!body.event_type) {

@@ -1,0 +1,33 @@
+# Environment Variables for Vercel
+# Copy these to Vercel Dashboard → Project Settings → Environment Variables
+
+# ============================================================================
+# REQUIRED VARIABLES - Add these in Vercel
+# ============================================================================
+
+VITE_SUPABASE_URL=https://lraqrtyalovuykeseaxn.supabase.co
+VITE_SUPABASE_ANON_KEY=PASTE_YOUR_ANON_KEY_HERE
+
+# ============================================================================
+# HOW TO GET THESE VALUES
+# ============================================================================
+# 
+# 1. Go to: https://supabase.com/dashboard/project/lraqrtyalovuykeseaxn/settings/api
+# 
+# 2. Copy:
+#    - Project URL → VITE_SUPABASE_URL
+#    - anon public key → VITE_SUPABASE_ANON_KEY
+#
+# ============================================================================
+# IMPORTANT NOTES
+# ============================================================================
+#
+# ⚠️ Add these to ALL environments in Vercel:
+#    - Production
+#    - Preview  
+#    - Development
+#
+# ⚠️ DO NOT add SUPABASE_SERVICE_ROLE_KEY to Vercel
+#    This is server-side only and should never be in the frontend
+#
+# ============================================================================

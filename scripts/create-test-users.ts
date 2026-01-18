@@ -71,11 +71,11 @@ const testUsers: TestUser[] = [
 ];
 
 async function getOrCreateDemoSchool() {
-  // Check if demo school exists
+  // Check if demo school exists (check by both code and slug to handle migrations)
   const { data: existingSchool } = await supabase
     .from('schools')
     .select('id, name')
-    .eq('code', 'demo-school')
+    .or('code.eq.demo-school,slug.eq.demo-school')
     .maybeSingle();
 
   if (existingSchool) {
@@ -89,6 +89,7 @@ async function getOrCreateDemoSchool() {
     .insert({
       name: 'Demo School',
       code: 'demo-school',
+      slug: 'demo-school', // Required: URL-safe identifier for multi-tenancy
       email: 'demo@school.com',
       is_active: true,
     })
@@ -107,12 +108,13 @@ async function getOrCreateDemoSchool() {
 async function createUser(user: TestUser, schoolId: string) {
   console.log(`\nCreating user: ${user.email} (${user.userType})...`);
 
-  // Check if user already exists
-  const { data: existingAuthUser } = await supabase.auth.admin.getUserByEmail(user.email);
+  // Check if user already exists by listing users and filtering by email
+  const { data: usersList, error: listError } = await supabase.auth.admin.listUsers();
+  const existingAuthUser = usersList?.users?.find(u => u.email === user.email);
   
   let userId: string;
 
-  if (existingAuthUser?.user) {
+  if (existingAuthUser) {
     console.log(`  ⚠️  User already exists in auth, using existing ID: ${existingAuthUser.user.id}`);
     userId = existingAuthUser.user.id;
     

@@ -8,7 +8,7 @@
  * - Teacher can only see their own classes
  */
 
-import { CheckSquare, BookOpen, Clock, Users, Calendar } from 'lucide-react';
+import { CheckSquare, BookOpen, Clock, Users, Calendar, Award } from 'lucide-react';
 import { useUser } from '../../domains/auth/contexts/UserContext';
 import { RoleGuard } from '../../shared/components/guards/RoleGuard';
 import { PermissionGuard } from '../../shared/components/guards/PermissionGuard';
@@ -168,7 +168,7 @@ function TeacherDashboardContent() {
               to="/teacher/gradebook"
               className="p-4 text-left bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
             >
-              <CheckSquare className="w-6 h-6 text-purple-600 mb-2" />
+              <Award className="w-6 h-6 text-purple-600 mb-2" />
               <p className="text-sm font-medium text-gray-900">Gradebook</p>
             </Link>
             <Link

@@ -29,14 +29,16 @@ export function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="flex">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="lg:pl-64">
-        <Header onMenuClick={() => setSidebarOpen(true)} />
+        <div className="flex-1 flex flex-col min-w-0">
+          <Header onMenuClick={() => setSidebarOpen(true)} />
 
-        <main className="py-6 px-4 sm:px-6 lg:px-8">
-          <Outlet />
-        </main>
+          <main className="flex-1 py-6 px-4 sm:px-6 lg:px-8">
+            <Outlet />
+          </main>
+        </div>
       </div>
 
       <MobileNav />
